@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assessor Competency Evaluation Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1B2A38;
+    --paper:#FAF9F6;
+    --panel:#FFFFFF;
+    --line:#D9D3C7;
+    --navy:#243B53;
+    --navy-dim:#3A5570;
+    --gold:#B08947;
+    --gold-dim:#E8DCC3;
+    --r1:#B4553F;
+    --r2:#C98A3B;
+    --r3:#5C8A5C;
+    --r4:#2E6B57;
+    --rna:#8A8378;
+    --danger:#B4553F;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.5;
+  }
+  h1,h2,h3{ font-family:'Source Serif 4', Georgia, serif; }
+
+  /* ---- Progress bar ---- */
+  .progress-shell{
+    position:sticky; top:0; z-index:50;
+    background:var(--navy);
+    padding:10px 20px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .progress-track{
+    flex:1; height:8px; background:rgba(255,255,255,0.18); border-radius:6px; overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; width:0%; background:var(--gold); transition:width .3s ease;
+  }
+  .progress-label{ color:#EDE7D9; font-size:12px; font-weight:600; white-space:nowrap; letter-spacing:.02em;}
+
+  /* ---- Header ---- */
+  .hero{
+    background:var(--navy);
+    color:#fff;
+    padding:36px 20px 44px;
+    text-align:center;
+    border-bottom:4px solid var(--gold);
+  }
+  .hero .eyebrow{
+    text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--gold-dim); font-weight:600;
+  }
+  .hero h1{ font-size:32px; margin:8px 0 6px; font-weight:600; }
+  .hero p{ color:#C7D2DC; font-size:14px; max-width:560px; margin:0 auto; }
+
+  .wrap{ max-width:800px; margin:0 auto; padding:0 20px 80px; }
+
+  /* ---- Cards / panels ---- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px;
+    margin-top:24px;
+    box-shadow:0 1px 2px rgba(27,42,56,0.04);
+  }
+  .panel h3{ margin:0 0 4px; font-size:17px; }
+  .panel .sub{ font-size:12.5px; color:#6B6459; margin-bottom:16px; }
+
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--navy); }
+  .field input[type=text], .field input[type=date], .field textarea{
+    width:100%; padding:9px 11px; border:1px solid var(--line); border-radius:7px;
+    font-family:inherit; font-size:14px; background:#FEFDFB; color:var(--ink);
+  }
+  .field textarea{ resize:vertical; min-height:64px; }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--gold); outline-offset:1px; border-color:var(--gold); }
+
+  .radio-row{ display:flex; gap:10px; }
+  .radio-pill{
+    flex:1; position:relative;
+  }
+  .radio-pill input{ position:absolute; opacity:0; inset:0; cursor:pointer; }
+  .radio-pill .box{
+    border:2px solid var(--line); border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer;
+    font-size:12px; font-weight:600; color:#7A7365; transition:all .15s ease; background:#FEFDFB;
+  }
+  .radio-pill .box .n{ font-family:'Source Serif 4',serif; font-size:18px; display:block; margin-bottom:2px; }
+  .radio-pill input:checked + .box{ color:#fff; border-color:transparent; }
+  .radio-pill:nth-child(1) input:checked + .box{ background:var(--r1); }
+  .radio-pill:nth-child(2) input:checked + .box{ background:var(--r2); }
+  .radio-pill:nth-child(3) input:checked + .box{ background:var(--r3); }
+  .radio-pill:nth-child(4) input:checked + .box{ background:var(--r4); }
+  .radio-pill:nth-child(5) input:checked + .box{ background:var(--rna); }
+  .radio-pill input:focus-visible + .box{ outline:2px solid var(--navy); outline-offset:2px; }
+
+  /* ---- Rating legend ---- */
+  .legend{ display:grid; grid-template-columns:1fr 1fr; gap:8px 20px; font-size:12.5px; }
+  .legend div strong{ color:var(--navy); }
+
+  /* ---- Section header ---- */
+  .section-title{
+    display:flex; align-items:baseline; gap:10px; margin:40px 0 6px;
+  }
+  .section-title .num{ font-family:'Source Serif 4',serif; font-size:26px; color:var(--gold); font-weight:600; }
+  .section-title h2{ font-size:20px; margin:0; color:var(--navy); }
+  .section-desc{ font-size:13px; color:#6B6459; margin-bottom:6px; padding-left:36px; }
+
+  .competency{
+    border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin-top:14px; background:var(--panel);
+  }
+  .competency .ctitle{ font-weight:700; font-size:14.5px; margin-bottom:5px; color:var(--ink); }
+  .competency .cdesc{ font-size:13px; color:#4B463D; margin-bottom:10px; }
+  .indicators{ background:#F3F0E9; border-radius:7px; padding:9px 12px; margin-bottom:12px; }
+  .indicators div{ font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:700; color:var(--navy-dim); margin-bottom:4px; }
+  .indicators ul{ margin:0; padding-left:16px; }
+  .indicators li{ font-size:12.5px; color:#4B463D; margin-bottom:2px; }
+
+  /* ---- Score summary ---- */
+  .score-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px; }
+  .score-box{ border:1px solid var(--line); border-radius:8px; padding:12px 8px; text-align:center; background:#FEFDFB; }
+  .score-box .lbl{ font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:#6B6459; font-weight:700; margin-bottom:6px; }
+  .score-box .val{ font-family:'Source Serif 4',serif; font-size:24px; font-weight:700; color:var(--navy); }
+  .score-box .val.empty{ color:#B7B1A3; font-size:15px; }
+
+  /* ---- Submit ---- */
+  .submit-bar{
+    display:flex; gap:12px; flex-wrap:wrap; margin-top:26px;
+  }
+  button.primary{
+    flex:1; min-width:200px;
+    background:var(--navy); color:#fff; border:none; border-radius:8px;
+    padding:14px 20px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit;
+    transition:background .15s ease;
+  }
+  button.primary:hover{ background:var(--navy-dim); }
+  button.primary:disabled{ opacity:.6; cursor:wait; }
+  button.secondary{
+    background:transparent; color:var(--navy); border:1.5px solid var(--navy); border-radius:8px;
+    padding:14px 18px; font-size:14px; font-weight:600; cursor:pointer; font-family:inherit;
+  }
+  button.secondary:hover{ background:#EEF1F4; }
+
+  .status-msg{ margin-top:14px; padding:12px 14px; border-radius:8px; font-size:13.5px; display:none; }
+  .status-msg.ok{ background:#E3EEE6; color:#245B3E; border:1px solid #B9D9C2; display:block; }
+  .status-msg.err{ background:#F7E4DF; color:#8A3623; border:1px solid #E9BDAF; display:block; }
+
+  .required-flag{ color:var(--r1); font-weight:700; margin-left:2px; }
+
+  footer{ text-align:center; font-size:11.5px; color:#948C7E; padding:30px 20px; }
+
+  @media (max-width:520px){
+    .hero h1{ font-size:24px; }
+    .radio-row{ flex-wrap:wrap; }
+    .radio-pill{ flex:1 1 30%; }
+    .legend{ grid-template-columns:1fr; }
+    .score-grid{ grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-shell">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">0 / 21 rated</div>
+</div>
+
+<div class="hero">
+  <div class="eyebrow">Assessment &amp; Evaluation</div>
+  <h1>Assessor Competency Evaluation Form</h1>
+  <p>A tool for self-assessment, supervisor evaluation, and peer review. Scores are calculated automatically as you go.</p>
+</div>
+
+<div class="wrap">
+
+  <!-- FORM META -->
+  <div class="panel">
+    <h3>Evaluation Details</h3>
+    <div class="sub">All fields required unless noted.</div>
+    <div class="field">
+      <label>Assessor Name <span class="required-flag">*</span></label>
+      <input type="text" id="assessorName" required>
+    </div>
+    <div class="field">
+      <label>Evaluation Type <span class="required-flag">*</span></label>
+      <div class="radio-row" style="gap:8px;">
+        <label class="radio-pill" style="flex:1;">
+          <input type="radio" name="evalType" value="Self-Assessment" required>
+          <span class="box" style="padding:10px 4px;">Self</span>
+        </label>
+        <label class="radio-pill" style="flex:1;">
+          <input type="radio" name="evalType" value="Supervisor">
+          <span class="box" style="padding:10px 4px;">Supervisor</span>
+        </label>
+        <label class="radio-pill" style="flex:1;">
+          <input type="radio" name="evalType" value="Peer">
+          <span class="box" style="padding:10px 4px;">Peer</span>
+        </label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Evaluator Name (if applicable)</label>
+      <input type="text" id="evaluatorName">
+    </div>
+    <div class="field">
+      <label>Date <span class="required-flag">*</span></label>
+      <input type="date" id="evalDate" required>
+    </div>
+  </div>
+
+  <!-- RATING SCALE LEGEND -->
+  <div class="panel">
+    <h3>Rating Scale</h3>
+    <div class="legend">
+      <div><strong>1 · Developing</strong> — beginning to develop; significant growth needed</div>
+      <div><strong>2 · Emerging</strong> — some evidence; continued development needed</div>
+      <div><strong>3 · Proficient</strong> — demonstrates consistently and effectively</div>
+      <div><strong>4 · Advanced</strong> — exemplifies competency; a model for others</div>
+      <div><strong>N/A</strong> — not applicable or unable to assess at this time</div>
+    </div>
+  </div>
+
+  <div id="sectionsRoot"></div>
+
+  <!-- SUMMARY -->
+  <div class="panel">
+    <h3>Overall Summary</h3>
+    <div class="sub">Calculated automatically from your ratings above (N/A excluded).</div>
+    <div class="score-grid" id="scoreGrid"></div>
+
+    <div class="field" style="margin-top:20px;">
+      <label>Overall Strengths</label>
+      <textarea id="strengths" rows="3"></textarea>
+    </div>
+    <div class="field">
+      <label>Priority Development Areas</label>
+      <textarea id="devAreas" rows="3"></textarea>
+    </div>
+    <div class="field">
+      <label>Professional Development Plan (recommended workshops / seminars / training)</label>
+      <textarea id="pdPlan" rows="4"></textarea>
+    </div>
+  </div>
+
+  <!-- SIGNATURE -->
+  <div class="panel">
+    <h3>Signature</h3>
+    <div class="sub">Typing your name below serves as your electronic signature on this evaluation.</div>
+    <div class="field">
+      <label>Assessor Signature (type full name) <span class="required-flag">*</span></label>
+      <input type="text" id="sigAssessor" required>
+    </div>
+    <div class="field">
+      <label>Evaluator Signature (if applicable)</label>
+      <input type="text" id="sigEvaluator">
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <button class="primary" id="submitBtn" type="button">Send Completed Form</button>
+    <button class="secondary" id="printBtn" type="button">Print / Save as PDF</button>
+  </div>
+  <div class="status-msg" id="statusMsg"></div>
+
+</div>
+
+<footer>Note: N/A ratings are excluded from all score calculations. Ratings should reflect current, observed performance.</footer>
+
+<script>
+/* =========================================================
+   1. CONFIG — replace with your own Formspree endpoint.
+   Sign up free at https://formspree.io, create a form,
+   and paste the ID it gives you (looks like "abcdwxyz") below.
+   ========================================================= */
+const FORMSPREE_ID = "YOUR_FORM_ID"; // <-- replace this
+
+/* =========================================================
+   2. CONTENT — competencies grouped by section
+   ========================================================= */
+const SECTIONS = [
+  {
+    key: "cognitive", title: "Cognitive Competencies",
+    desc: "Knowledge, understanding, and critical thinking abilities",
+    items: [
+      { id:"1.1", title:"Assessment Literacy",
+        desc:"Understands various assessment types (formative, summative, diagnostic) and when to apply each; can interpret assessment data and translate results into actionable insights; knows how to align assessments with learning objectives and outcomes.",
+        indicators:["Can explain the difference between formative, summative, and diagnostic assessments","Interprets assessment data to identify student learning patterns","Aligns assessment tasks with stated learning objectives"] },
+      { id:"1.2", title:"Knowledge of Learning Theories",
+        desc:"Understands cognitive load theory and how it affects assessment design; familiar with Bloom's Taxonomy and can create assessments targeting different cognitive levels.",
+        indicators:["Applies cognitive load theory to reduce assessment complexity","Creates questions at multiple Bloom's Taxonomy levels","Explains how learning theories inform assessment choices"] },
+      { id:"1.3", title:"Analytical and Interpretive Skills",
+        desc:"Can analyze assessment results to identify patterns, gaps, and learning needs; able to evaluate the validity and reliability of assessment instruments.",
+        indicators:["Identifies trends and patterns in assessment data","Evaluates whether assessments measure what they intend to measure","Uses data to recommend specific instructional changes"] },
+      { id:"1.4", title:"Understanding of Academic Integrity",
+        desc:"Recognizes plagiarism and other integrity issues; knows how to design assessments that minimize cheating opportunities; understands ethical assessment practices.",
+        indicators:["Identifies potential integrity violations in student work","Designs assessments that promote authentic work","Follows ethical guidelines in assessment administration"] },
+      { id:"1.5", title:"Knowledge of Inclusive Assessment Principles",
+        desc:"Understands equity and accessibility requirements in assessment; knows various accommodation strategies for diverse learners; familiar with UDL principles.",
+        indicators:["Explains accessibility requirements for different student needs","Identifies appropriate accommodations for diverse learners","Applies UDL principles in assessment design"] },
+    ]
+  },
+  {
+    key: "functional", title: "Functional Competencies",
+    desc: "Technical skills and practical application abilities",
+    items: [
+      { id:"2.1", title:"Assessment Design and Development Skills",
+        desc:"Can create clear, measurable learning objectives; able to develop valid and reliable assessment instruments; skilled in creating effective rubrics.",
+        indicators:["Writes clear, measurable learning objectives","Creates valid assessment instruments aligned with objectives","Designs assessments in various formats"] },
+      { id:"2.2", title:"Rubric Development Expertise",
+        desc:"Can create detailed, criterion-referenced rubrics; able to define performance levels clearly and objectively; knows how to ensure rubrics remove subjectivity.",
+        indicators:["Develops rubrics with clear, specific criteria","Defines distinct performance levels","Creates rubrics that multiple assessors can apply consistently"] },
+      { id:"2.3", title:"Technical Assessment Administration",
+        desc:"Competent in using assessment platforms and technologies; can manage assessment logistics; able to maintain proper documentation and record-keeping.",
+        indicators:["Uses assessment technologies effectively","Manages assessment logistics smoothly","Maintains organized, accurate records"] },
+      { id:"2.4", title:"Adaptation and Modification Skills",
+        desc:"Can modify assessment infrastructure to accommodate individual needs; able to provide reasonable accommodations while maintaining assessment integrity.",
+        indicators:["Modifies assessments appropriately for individual needs","Provides accommodations without compromising validity","Differentiates assessments for diverse learning styles"] },
+      { id:"2.5", title:"Evaluation and Quality Assurance",
+        desc:"Can conduct item analysis to improve assessment quality; able to review and revise assessments based on performance data.",
+        indicators:["Analyzes individual assessment items for effectiveness","Revises assessments based on student performance data","Implements systematic quality improvement processes"] },
+    ]
+  },
+  {
+    key: "social", title: "Social Competencies",
+    desc: "Interpersonal and collaborative abilities",
+    items: [
+      { id:"3.1", title:"Communication Skills",
+        desc:"Can explain assessment expectations clearly to students; able to communicate results effectively to various stakeholders; skilled in written and verbal communication.",
+        indicators:["Explains assessment expectations clearly to students","Communicates results effectively to stakeholders","Conveys complex concepts in accessible language"] },
+      { id:"3.2", title:"Feedback Provision",
+        desc:"Provides timely, constructive, and specific feedback; can deliver feedback that encourages inquiry, discovery, and creativity; knows how to make feedback actionable.",
+        indicators:["Provides timely and specific feedback","Delivers feedback that encourages learning and growth","Makes feedback actionable with clear improvement steps"] },
+      { id:"3.3", title:"Collaborative Engagement",
+        desc:"Actively involves learners in the assessment process; can work effectively with colleagues to standardize assessment practices; open to peer review.",
+        indicators:["Involves learners in the assessment process","Collaborates with colleagues on assessment standards","Welcomes peer review and moderation"] },
+      { id:"3.4", title:"Cultural Competence",
+        desc:"Sensitive to cultural differences in learning and assessment; can design culturally responsive assessments; avoids bias in assessment design and evaluation.",
+        indicators:["Considers cultural differences in assessment design","Creates culturally responsive assessments","Reviews assessments for potential bias"] },
+    ]
+  },
+  {
+    key: "affective", title: "Affective / Personal Competencies",
+    desc: "Attitudes, values, and professional dispositions",
+    items: [
+      { id:"4.1", title:"Fairness and Objectivity",
+        desc:"Applies assessment criteria consistently across all students; can set aside personal biases when evaluating student work; maintains transparency.",
+        indicators:["Applies criteria consistently to all students","Sets aside personal biases in evaluation","Maintains transparency in assessment processes"] },
+      { id:"4.2", title:"Professional Integrity and Ethics",
+        desc:"Maintains confidentiality of student records and assessment results; adheres to professional standards; demonstrates honesty in reporting.",
+        indicators:["Maintains strict confidentiality of student information","Adheres to professional standards and policies","Reports assessment outcomes honestly and accurately"] },
+      { id:"4.3", title:"Commitment to Continuous Improvement",
+        desc:"Seeks professional development opportunities in assessment; reflects on own assessment practices regularly; open to feedback.",
+        indicators:["Actively seeks professional development opportunities","Reflects regularly on assessment practices","Stays current with assessment research and trends"] },
+      { id:"4.4", title:"Flexibility and Adaptability",
+        desc:"Can adjust assessment approaches based on student needs; responsive to feedback from students and colleagues; willing to try new methods.",
+        indicators:["Adjusts approaches based on student needs and feedback","Willing to experiment with new assessment methods","Balances consistency with flexibility"] },
+      { id:"4.5", title:"Attention to Detail and Organization",
+        desc:"Maintains organized assessment records and documentation; ensures accuracy in scoring and grade calculation; manages timelines effectively.",
+        indicators:["Maintains organized and complete records","Ensures accuracy in all scoring and calculations","Manages timelines and deadlines effectively"] },
+    ]
+  },
+  {
+    key: "metacognitive", title: "Metacognitive Competencies",
+    desc: "Self-awareness and reflective practice",
+    items: [
+      { id:"5.1", title:"Reflective Practice",
+        desc:"Regularly evaluates own assessment practices; can identify strengths and weaknesses in assessment approach; uses reflection to inform improvements.",
+        indicators:["Regularly evaluates own assessment practices","Identifies personal strengths and areas for growth","Uses reflection to improve practice"] },
+      { id:"5.2", title:"Self-Regulation",
+        desc:"Monitors own potential biases during assessment; can maintain consistency despite external pressures; recognizes when to seek guidance.",
+        indicators:["Monitors and manages personal biases","Maintains consistency under pressure","Recognizes when to seek support or guidance"] },
+    ]
+  }
+];
+
+const RATINGS = [
+  {v:"1", label:"Developing"},
+  {v:"2", label:"Emerging"},
+  {v:"3", label:"Proficient"},
+  {v:"4", label:"Advanced"},
+  {v:"NA", label:"N/A"},
+];
+
+let TOTAL_ITEMS = 0;
+SECTIONS.forEach(s => TOTAL_ITEMS += s.items.length);
+
+/* =========================================================
+   3. RENDER
+   ========================================================= */
+const root = document.getElementById("sectionsRoot");
+let sectionNum = 1;
+
+SECTIONS.forEach(section => {
+  const sec = document.createElement("div");
+  sec.innerHTML = `
+    <div class="section-title"><span class="num">${sectionNum}</span><h2>${section.title}</h2></div>
+    <div class="section-desc">${section.desc}</div>
+  `;
+  root.appendChild(sec);
+
+  section.items.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "competency";
+    card.innerHTML = `
+      <div class="ctitle">${item.id} ${item.title}</div>
+      <div class="cdesc">${item.desc}</div>
+      <div class="indicators">
+        <div>Key Indicators</div>
+        <ul>${item.indicators.map(i => `<li>${i}</li>`).join("")}</ul>
+      </div>
+      <div class="radio-row" role="radiogroup" aria-label="${item.title} rating">
+        ${RATINGS.map(r => `
+          <label class="radio-pill">
+            <input type="radio" name="rate_${item.id}" value="${r.v}" data-section="${section.key}">
+            <span class="box"><span class="n">${r.v}</span>${r.label}</span>
+          </label>
+        `).join("")}
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>Comments / Evidence / Development Needs</label>
+        <textarea rows="2" name="comment_${item.id}"></textarea>
+      </div>
+    `;
+    root.appendChild(card);
+  });
+
+  sectionNum++;
+});
+
+// Score summary boxes
+const scoreGrid = document.getElementById("scoreGrid");
+const scoreBoxes = {};
+function makeScoreBox(key, label){
+  const div = document.createElement("div");
+  div.className = "score-box";
+  div.innerHTML = `<div class="lbl">${label}</div><div class="val empty" id="score_${key}">—</div>`;
+  scoreGrid.appendChild(div);
+  scoreBoxes[key] = div.querySelector(".val");
+}
+makeScoreBox("overall", "Overall");
+SECTIONS.forEach(s => makeScoreBox(s.key, s.title.split(" ")[0]));
+
+/* =========================================================
+   4. PROGRESS + SCORE CALCULATION
+   ========================================================= */
+function recalc(){
+  let ratedCount = 0;
+  let allSum = 0, allN = 0;
+  const bySection = {};
+  SECTIONS.forEach(s => bySection[s.key] = {sum:0, n:0});
+
+  document.querySelectorAll('input[type=radio][name^="rate_"]:checked').forEach(input => {
+    ratedCount++;
+    const sectionKey = input.dataset.section;
+    if(input.value !== "NA"){
+      const v = parseInt(input.value, 10);
+      allSum += v; allN++;
+      bySection[sectionKey].sum += v; bySection[sectionKey].n++;
+    }
+  });
+
+  document.getElementById("progressLabel").textContent = `${ratedCount} / ${TOTAL_ITEMS} rated`;
+  document.getElementById("progressFill").style.width = `${(ratedCount/TOTAL_ITEMS)*100}%`;
+
+  const overallEl = scoreBoxes["overall"];
+  if(allN > 0){ overallEl.textContent = (allSum/allN).toFixed(2); overallEl.classList.remove("empty"); }
+  else { overallEl.textContent = "—"; overallEl.classList.add("empty"); }
+
+  SECTIONS.forEach(s => {
+    const el = scoreBoxes[s.key];
+    const d = bySection[s.key];
+    if(d.n > 0){ el.textContent = (d.sum/d.n).toFixed(2); el.classList.remove("empty"); }
+    else { el.textContent = "—"; el.classList.add("empty"); }
+  });
+}
+root.addEventListener("change", recalc);
+recalc();
+
+/* =========================================================
+   5. COLLECT DATA
+   ========================================================= */
+function collectData(){
+  const data = {};
+  data.assessorName = document.getElementById("assessorName").value.trim();
+  data.evaluationType = (document.querySelector('input[name=evalType]:checked') || {}).value || "";
+  data.evaluatorName = document.getElementById("evaluatorName").value.trim();
+  data.date = document.getElementById("evalDate").value;
+
+  SECTIONS.forEach(section => {
+    section.items.forEach(item => {
+      const ratingInput = document.querySelector(`input[name="rate_${item.id}"]:checked`);
+      data[`${item.id} ${item.title} - Rating`] = ratingInput ? ratingInput.value : "";
+      const comment = document.querySelector(`textarea[name="comment_${item.id}"]`).value.trim();
+      data[`${item.id} ${item.title} - Comments`] = comment;
+    });
+  });
+
+  data["Overall Score"] = scoreBoxes["overall"].textContent;
+  SECTIONS.forEach(s => { data[`${s.title} Score`] = scoreBoxes[s.key].textContent; });
+
+  data["Overall Strengths"] = document.getElementById("strengths").value.trim();
+  data["Priority Development Areas"] = document.getElementById("devAreas").value.trim();
+  data["Professional Development Plan"] = document.getElementById("pdPlan").value.trim();
+  data["Assessor Signature"] = document.getElementById("sigAssessor").value.trim();
+  data["Evaluator Signature"] = document.getElementById("sigEvaluator").value.trim();
+
+  return data;
+}
+
+/* =========================================================
+   6. SUBMIT
+   ========================================================= */
+const statusMsg = document.getElementById("statusMsg");
+function showStatus(kind, text){
+  statusMsg.className = "status-msg " + kind;
+  statusMsg.textContent = text;
+}
+
+document.getElementById("submitBtn").addEventListener("click", async () => {
+  const data = collectData();
+
+  if(!data.assessorName || !data.evaluationType || !data.date || !data["Assessor Signature"]){
+    showStatus("err", "Please complete Assessor Name, Evaluation Type, Date, and your Signature before sending.");
+    window.scrollTo({top:0, behavior:"smooth"});
+    return;
+  }
+
+  if(FORMSPREE_ID === "YOUR_FORM_ID"){
+    showStatus("err", "This form isn't connected yet — the page owner needs to add a Formspree form ID in the code (see comment at top of the script). Meanwhile, you can use 'Print / Save as PDF' and email it manually.");
+    return;
+  }
+
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+
+  try{
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    if(res.ok){
+      showStatus("ok", "Thank you — your completed evaluation has been sent.");
+      btn.textContent = "Sent ✓";
+    } else {
+      throw new Error("Server responded with an error");
+    }
+  } catch(err){
+    showStatus("err", "Something went wrong sending the form. Please try again, or use 'Print / Save as PDF' and send it manually.");
+    btn.disabled = false;
+    btn.textContent = "Send Completed Form";
+  }
+});
+
+document.getElementById("printBtn").addEventListener("click", () => window.print());
+</script>
+
+</body>
+</html>
