@@ -92,10 +92,12 @@
   }
   .radio-pill input{ position:absolute; opacity:0; inset:0; cursor:pointer; }
   .radio-pill .box{
-    border:2px solid var(--line); border-radius:8px; padding:8px 4px; text-align:center; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    border:2px solid var(--line); border-radius:8px; padding:10px 4px; text-align:center; cursor:pointer;
     font-size:12px; font-weight:600; color:#7A7365; transition:all .15s ease; background:#FEFDFB;
+    min-height:56px; line-height:1.3;
   }
-  .radio-pill .box .n{ font-family:'Source Serif 4',serif; font-size:18px; display:block; margin-bottom:2px; }
+  .radio-pill .box .n{ font-family:'Source Serif 4',serif; font-size:18px; line-height:1; margin-bottom:3px; }
   .radio-pill input:checked + .box{ color:#fff; border-color:transparent; }
   .radio-pill:nth-child(1) input:checked + .box{ background:var(--r1); }
   .radio-pill:nth-child(2) input:checked + .box{ background:var(--r2); }
@@ -282,7 +284,7 @@
    Sign up free at https://formspree.io, create a form,
    and paste the ID it gives you (looks like "abcdwxyz") below.
    ========================================================= */
-const FORMSPREE_ID = "YOUR_FORM_ID"; // <-- replace this
+const FORMSPREE_ID = "xnjkloba";
 
 /* =========================================================
    2. CONTENT — competencies grouped by section
